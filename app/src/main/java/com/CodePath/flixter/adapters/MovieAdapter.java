@@ -1,20 +1,25 @@
 package com.CodePath.flixter.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.CodePath.flixter.DetailActivity;
 import com.CodePath.flixter.R;
 import com.CodePath.flixter.models.Movie;
 import com.bumptech.glide.Glide;
+
+import org.parceler.Parcels;
 
 import java.util.List;
 
@@ -22,6 +27,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     Context context;
     List<Movie> movies;
+
 
     public MovieAdapter(Context context, List<Movie> movies) {
         this.context = context;
@@ -53,8 +59,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         return movies.size();
     }
 
+    //ViewHolder holds each reference of element in one row in the RecycleView.
     public class ViewHolder extends RecyclerView.ViewHolder{
-
+        RelativeLayout container;
         TextView tvTitle;
         TextView tvOverview;
         ImageView ivPoster;
@@ -64,6 +71,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
             tvTitle = itemView.findViewById(R.id.tvTitle);
             tvOverview = itemView.findViewById(R.id.tvOverview);
             ivPoster = itemView.findViewById(R.id.ivPoster);
+            container = itemView.findViewById(R.id.container);
         }
 
         public void bind(Movie movie) {
@@ -81,6 +89,17 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
             }
 
             Glide.with(context).load(imageUrl).into(ivPoster);
+
+            //1.Register click listener on the whole row.
+            container.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //2.Navigate a new activity on a tap.
+                    Intent i = new Intent(context,DetailActivity.class);
+                    i.putExtra("movie", Parcels.wrap(movie));
+                    context.startActivities(new Intent[]{i});
+                }
+            });
         }
     }
 }
